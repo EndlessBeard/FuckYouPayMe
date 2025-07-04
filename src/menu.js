@@ -4,13 +4,16 @@ export function initMenu() {
     const menuOverlay = document.getElementById('menu-overlay');
     const menuItems = document.querySelectorAll('.menu-item');
     
-    // Sections to toggle
+    // Sections to toggle (dashboard is always visible)
     const sections = {
         'calendar-section': document.getElementById('calendar-section'),
         'recorded-hours-list-section': document.getElementById('recorded-hours-list-section'),
         'settings-section': document.getElementById('settings-section'),
         'paycheck-display-section': document.getElementById('paycheck-display-section')
     };
+    
+    // Dashboard section reference
+    const dashboardSection = document.getElementById('dashboard-section');
     
     // Toggle menu when menu icon is clicked
     menuToggle.addEventListener('click', (e) => {
@@ -57,6 +60,17 @@ export function initMenu() {
                     sections[id].classList.remove('section-fadeIn');
                 }
             });
+            
+            // Make sure dashboard is always visible
+            if (dashboardSection) {
+                dashboardSection.style.display = 'block';
+                
+                // When switching to any section, update the dashboard
+                import('./dashboard.js').then(module => {
+                    module.updateDashboard();
+                    console.log('Dashboard updated after menu navigation');
+                });
+            }
             
             // Set active menu item
             setActiveMenuItem(sectionId);

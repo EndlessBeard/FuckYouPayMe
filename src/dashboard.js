@@ -26,6 +26,7 @@ export function initDashboard() {
 export function updateDashboard() {
     // Get current settings
     const settings = getSettings();
+    console.log('Updating dashboard with settings:', settings);
     
     // Calculate date ranges for current and last week
     const today = new Date();
@@ -52,6 +53,12 @@ export function updateDashboard() {
     currentWeekHoursElement.textContent = formatHours(currentWeekData.totalHours);
     currentWeekPayElement.textContent = formatCurrency(currentWeekData.grossPay);
     daysUntilPaydayElement.textContent = daysUntilPayday;
+    
+    console.log('Dashboard updated with:', {
+        lastWeek: { hours: lastWeekData.totalHours, pay: lastWeekData.grossPay },
+        currentWeek: { hours: currentWeekData.totalHours, pay: currentWeekData.grossPay },
+        daysUntilPayday
+    });
 }
 
 // Get the start of the week (Monday) for a given date

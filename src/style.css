@@ -308,6 +308,7 @@ body {
 /* Dashboard Section Styling */
 .dashboard-card {
     margin-bottom: 25px;
+    display: block !important; /* Always display the dashboard */
 }
 
 .dashboard-summary {

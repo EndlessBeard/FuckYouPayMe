@@ -60,6 +60,8 @@ function saveDailyHours() {
     const dateText = selectedDateDisplay.textContent;
     const selectedDate = new Date(dateText);
     
+    console.log('Saving hours for date:', selectedDate, { hoursWorked, travelTime });
+    
     // Save the hours data
     saveHoursForDate(selectedDate, hoursWorked, travelTime);
     
@@ -67,6 +69,12 @@ function saveDailyHours() {
     renderRecordedHoursList();
     updateCalendar();
     updatePaycheckDisplay();
+    
+    // Also update the dashboard
+    import('./dashboard.js').then(module => {
+        module.updateDashboard();
+        console.log('Dashboard updated after saving daily hours');
+    });
     
     // Show a confirmation message
     alert('Hours saved successfully!');
@@ -157,6 +165,12 @@ function confirmClearAllHours() {
         renderRecordedHoursList();
         updateCalendar();
         updatePaycheckDisplay();
+        
+        // Also update the dashboard
+        import('./dashboard.js').then(module => {
+            module.updateDashboard();
+            console.log('Dashboard updated after clearing all hours');
+        });
         
         // Clear the input fields
         hoursWorkedInput.value = '';
