@@ -8,7 +8,7 @@ This outline details the structure, styling, and JavaScript logic for a robust w
 * **Custom Title Bar**: A thin title bar with the app name "Fuck You Pay Me" and a menu icon (placeholder for future functionality).  
 * **Dynamic Dashboard**:  
   * Displays summaries for the last week, current week, and days until the next payday.  
-  * **New Integrated Daily Hour Input**: A section within the dashboard to show and edit hours for the *selected day* from the calendar. This includes fields for "Hours Worked," "Travel Time," and a "Save" button.  
+  * **Integrated Daily Hour Input**: A section within the dashboard to show and edit hours for the *selected day* from the calendar. This includes fields for "Hours Worked," "Travel Time," and a "Save" button.  
 * **Interactive Calendar**:  
   * An interactive calendar that allows users to select a date.  
   * Highlights the selected day (defaulting to the current day on load).  
@@ -1425,5 +1425,3 @@ The JavaScript has undergone significant changes to manage the selectedDate, pop
 * **Detailed Withholdings**: Allow for multiple withholding types (e.g., federal tax, state tax, social security, medicare, 401k) with different percentages or fixed amounts.  
 * **Overtime Calculation**: Implement rules for overtime pay (e.g., 1.5x pay after 40 hours in a week).  
 * **Data Export/Import**: Allow users to export their data (e.g., as a CSV file) and import it back.  
-* **Graphical Representation**: Add simple charts or graphs to visualize hours worked over time.  
-* **User Accounts**: For multi-user scenarios, integrate a backend with user authentication.
