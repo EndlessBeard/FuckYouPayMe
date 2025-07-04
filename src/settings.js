@@ -54,41 +54,70 @@ function loadAndDisplaySettings() {
 
 // Save user settings
 function saveUserSettings() {
-    // Get values from form
-    const payRate = parseFloat(payRateInput.value) || 0;
-    const travelRate = parseFloat(travelRateInput.value) || 0;
-    const payPeriodDays = parseInt(payPeriodDaysInput.value) || 14;
-    const payPeriodStartDate = payPeriodStartDateInput.value;
-    const withholdingPercentage = parseFloat(withholdingPercentageInput.value) || 0;
+    console.group('Saving Settings Process');
     
-    // Create settings object
-    const settings = {
-        payRate,
-        travelRate,
-        payPeriodDays,
-        payPeriodStartDate,
-        withholdingPercentage
-    };
+    try {
+        // Get values from form
+        const payRate = parseFloat(payRateInput.value) || 0;
+        const travelRate = parseFloat(travelRateInput.value) || 0;
+        const payPeriodDays = parseInt(payPeriodDaysInput.value) || 14;
+        const payPeriodStartDate = payPeriodStartDateInput.value;
+        const withholdingPercentage = parseFloat(withholdingPercentageInput.value) || 0;
+        
+        console.log('Form values retrieved:', {
+            payRate,
+            travelRate,
+            payPeriodDays,
+            payPeriodStartDate,
+            withholdingPercentage
+        });
+        
+        // Create settings object
+        const settings = {
+            payRate,
+            travelRate,
+            payPeriodDays,
+            payPeriodStartDate,
+            withholdingPercentage
+        };
+        
+        console.log('Saving settings:', settings);
+        
+        // Save settings
+        const savedSettings = saveSettings(settings);
+        console.log('Settings saved and returned:', savedSettings);
+        
+        // Check if save was successful by comparing values
+        const saveSuccessful = Object.keys(settings).every(key => 
+            savedSettings[key] === settings[key]
+        );
+        
+        console.log('Save successful?', saveSuccessful ? 'YES' : 'NO');
+        
+        if (!saveSuccessful) {
+            console.warn('Settings may not have been saved correctly:');
+            console.warn('- Original:', settings);
+            console.warn('- Saved:', savedSettings);
+        }
+        
+        // Update paycheck display with new settings
+        updatePaycheckDisplay();
+        console.log('Paycheck display updated');
+        
+        // Update dashboard with new settings
+        updateDashboard();
+        console.log('Dashboard updated with new settings');
+        
+        // Show confirmation
+        alert(saveSuccessful ? 
+            'Settings saved successfully!' : 
+            'Warning: Settings may not have saved correctly. Please check the console for details.');
+    } catch (error) {
+        console.error('Error saving settings:', error);
+        alert('Error saving settings: ' + error.message);
+    }
     
-    console.log('Saving settings:', settings);
-    
-    // Save settings
-    saveSettings(settings);
-    
-    // Retrieve the saved settings to confirm
-    const savedSettings = loadSettings();
-    console.log('Settings saved and retrieved:', savedSettings);
-    
-    // Update paycheck display with new settings
-    updatePaycheckDisplay();
-    console.log('Paycheck display updated');
-    
-    // Update dashboard with new settings
-    updateDashboard();
-    console.log('Dashboard updated with new settings');
-    
-    // Show confirmation
-    alert('Settings saved successfully!');
+    console.groupEnd();
 }
 
 // Get current settings

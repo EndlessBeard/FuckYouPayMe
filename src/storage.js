@@ -19,7 +19,22 @@ export function loadHoursData() {
 
 // Save hours data to localStorage
 export function saveHoursData(data) {
-    localStorage.setItem(HOURS_DATA_KEY, JSON.stringify(data));
+    try {
+        console.log('Attempting to save hours data:', data);
+        
+        // Stringify the hours data
+        const hoursJSON = JSON.stringify(data);
+        console.log('Hours JSON to save:', hoursJSON);
+        
+        // Save to localStorage
+        localStorage.setItem(HOURS_DATA_KEY, hoursJSON);
+        console.log('Hours data saved to localStorage');
+        
+        return true;
+    } catch (error) {
+        console.error('Error saving hours data to localStorage:', error);
+        return false;
+    }
 }
 
 // Save hours for a specific date
@@ -66,18 +81,52 @@ export function clearAllHoursData() {
 
 // Load settings from localStorage
 export function loadSettings() {
-    const storedSettings = localStorage.getItem(SETTINGS_KEY);
-    return storedSettings ? JSON.parse(storedSettings) : defaultSettings;
+    try {
+        console.log('Attempting to load settings from localStorage');
+        
+        // Try to retrieve settings from localStorage
+        const storedSettings = localStorage.getItem(SETTINGS_KEY);
+        console.log('Raw stored settings:', storedSettings);
+        
+        // Parse or use defaults
+        const settings = storedSettings ? JSON.parse(storedSettings) : defaultSettings;
+        console.log('Loaded settings:', settings);
+        
+        return settings;
+    } catch (error) {
+        console.error('Error loading settings from localStorage:', error);
+        return defaultSettings;
+    }
 }
 
 // Save settings to localStorage
 export function saveSettings(settings) {
-    localStorage.setItem(SETTINGS_KEY, JSON.stringify({
-        ...defaultSettings,
-        ...settings
-    }));
-    
-    return loadSettings();
+    try {
+        console.log('Attempting to save settings:', settings);
+        
+        // Create the merged settings object
+        const mergedSettings = {
+            ...defaultSettings,
+            ...settings
+        };
+        
+        // Stringify the settings
+        const settingsJSON = JSON.stringify(mergedSettings);
+        console.log('Settings JSON to save:', settingsJSON);
+        
+        // Save to localStorage
+        localStorage.setItem(SETTINGS_KEY, settingsJSON);
+        console.log('Settings saved to localStorage');
+        
+        // Verify the save by loading again
+        const savedSettings = loadSettings();
+        console.log('Verified saved settings:', savedSettings);
+        
+        return savedSettings;
+    } catch (error) {
+        console.error('Error saving settings to localStorage:', error);
+        return defaultSettings;
+    }
 }
 
 // Format currency value
@@ -94,9 +143,32 @@ export function formatHours(hours) {
     return parseFloat(hours).toFixed(2);
 }
 
+// Check if localStorage is available and working
+export function isLocalStorageAvailable() {
+    try {
+        const testKey = 'fypm_test';
+        localStorage.setItem(testKey, 'test');
+        const testResult = localStorage.getItem(testKey);
+        localStorage.removeItem(testKey);
+        
+        const isAvailable = testResult === 'test';
+        console.log('localStorage availability test:', isAvailable ? 'PASSED' : 'FAILED');
+        
+        if (!isAvailable) {
+            console.error('localStorage is not available or not working properly');
+        }
+        
+        return isAvailable;
+    } catch (error) {
+        console.error('Error testing localStorage availability:', error);
+        return false;
+    }
+}
+
 // Debug utility to view all stored data
 export function debugStorageState() {
     return {
+        isLocalStorageAvailable: isLocalStorageAvailable(),
         hoursData: loadHoursData(),
         settings: loadSettings(),
         allStorageKeys: Object.keys(localStorage),
