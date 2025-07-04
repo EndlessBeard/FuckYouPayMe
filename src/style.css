@@ -1,0 +1,483 @@
+/* Color Palette for Dark Mode */
+:root {
+    --bg-primary: #1a1a2e; /* Dark Blue/Purple */
+    --bg-secondary: #16213e; /* Slightly lighter dark blue */
+    --card-bg: #0f3460; /* Darker blue for cards */
+    --text-primary: #e0e0e0; /* Light gray text */
+    --text-secondary: #b0b0b0; /* Slightly darker light gray */
+    --border-color: #0d2a4a; /* Darker border */
+    --input-bg: #2d4263; /* Input background */
+    --input-border: #3e5c76; /* Input border */
+    --button-primary-bg: #007bff; /* Blue */
+    --button-primary-hover: #0056b3;
+    --button-danger-bg: #dc3545; /* Red */
+    --button-danger-hover: #c82333;
+    --button-secondary-bg: #4a5d7c; /* Darker gray for secondary buttons */
+    --button-secondary-hover: #3a4b65;
+    --highlight-color: #ffeb3b; /* Yellow for payday countdown */
+    --net-pay-color: #28a745; /* Green for net pay */
+    --calendar-highlight-bg: #28a745; /* Green for days with hours */
+    --calendar-highlight-border: #1e7e34;
+    --calendar-selected-bg: #007bff; /* Blue for selected day */
+    --calendar-selected-border: #0056b3;
+}
+
+/* Basic Reset & Body Styling */
+body {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0; /* Remove body padding, container will handle it */
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column; /* Stack title bar and container */
+    min-height: 100vh;
+    box-sizing: border-box;
+}
+
+/* Title Bar Styling */
+.title-bar {
+    background-color: var(--bg-secondary);
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    height: 60px; /* Thin height */
+    flex-shrink: 0; /* Prevent shrinking */
+}
+
+.app-title {
+    margin: 0;
+    font-size: 1.8em;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.4);
+}
+
+.menu-icon {
+    width: 30px;
+    height: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+.menu-icon:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.menu-icon .bar {
+    width: 100%;
+    height: 3px;
+    background-color: white;
+    border-radius: 2px;
+}
+
+/* Main Container Styling */
+.container {
+    flex-grow: 1; /* Take remaining space */
+    background-color: var(--bg-primary);
+    padding: 20px; /* Padding for the main content area */
+    max-width: 1100px; /* Increased max width for desktop to accommodate 4 items */
+    width: 100%;
+    margin: 20px auto; /* Center the container with margin */
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 25px; /* Space between sections */
+}
+
+/* Card Styling for Sections */
+.card {
+    background-color: var(--card-bg);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid var(--border-color);
+}
+
+.card h2 {
+    color: var(--text-primary);
+    font-size: 1.6em;
+    margin-top: 0;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 10px;
+}
+
+/* Input Group Styling */
+.input-group {
+    margin-bottom: 18px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-size: 0.95em;
+}
+
+.input-group input[type="number"],
+.input-group input[type="date"] {
+    width: calc(100% - 22px); /* Account for padding and border */
+    padding: 12px 10px;
+    border: 1px solid var(--input-border);
+    border-radius: 8px;
+    font-size: 1em;
+    box-sizing: border-box;
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-group input[type="number"]:focus,
+.input-group input[type="date"]:focus {
+    border-color: var(--button-primary-bg); /* Highlight on focus */
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* Button Styling */
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    margin-top: 10px;
+}
+
+.btn.primary {
+    background-color: var(--button-primary-bg);
+    color: white;
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+}
+
+.btn.primary:hover {
+    background-color: var(--button-primary-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 123, 255, 0.3);
+}
+
+.btn.danger {
+    background-color: var(--button-danger-bg);
+    color: white;
+    box-shadow: 0 4px 10px rgba(220, 53, 69, 0.2);
+}
+
+.btn.danger:hover {
+    background-color: var(--button-danger-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(220, 53, 69, 0.3);
+}
+
+.btn.secondary {
+    background-color: var(--button-secondary-bg);
+    color: var(--text-primary);
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.btn.secondary:hover {
+    background-color: var(--button-secondary-hover);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Recorded Hours List */
+.hours-list-container {
+    max-height: 250px; /* Scrollable area for hours */
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    margin-top: 20px;
+    padding: 10px;
+    background-color: var(--bg-secondary);
+}
+
+#recorded-hours-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+#recorded-hours-list li {
+    background-color: var(--input-bg);
+    padding: 12px 15px;
+    margin-bottom: 8px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Dashboard Section Styling */
+.dashboard-card {
+    margin-bottom: 25px;
+}
+
+.dashboard-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.dashboard-summary.horizontal {
+    display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping to ensure all items stay in one row */
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.dashboard-summary.horizontal .dashboard-item {
+    flex: 1 1 0; /* Equal width distribution with flex-basis 0 */
+    min-width: 0; /* Remove min-width to prevent overflow */
+    max-width: none; /* Remove max-width constraint */
+}
+
+.dashboard-item {
+    background-color: var(--bg-secondary);
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.dashboard-item h3 {
+    margin-top: 0;
+    font-size: 1.1em;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.dashboard-item p {
+    margin: 8px 0;
+    font-size: 1.1em;
+}
+
+.dashboard-item.current-week {
+    background-color: var(--button-primary-bg);
+    color: white;
+}
+
+.dashboard-item.current-week h3 {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.dashboard-item.payday-countdown span {
+    color: var(--highlight-color);
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+/* Selected Day Input Card Styling - Now part of dashboard items */
+.dashboard-item.selected-day-input {
+    background-color: var(--bg-secondary);
+    text-align: left;
+    padding: 15px 15px; /* Reduce padding to save space */
+}
+
+.dashboard-item.selected-day-input h3 {
+    text-align: center;
+    margin-bottom: 10px; /* Reduce margin to save space */
+    font-size: 1.1em;
+    color: var(--text-primary);
+}
+
+.dashboard-item.selected-day-input .input-group {
+    margin-bottom: 8px; /* Reduce margin to save space */
+}
+
+.dashboard-item.selected-day-input .input-group label {
+    font-size: 0.85em; /* Slightly smaller font */
+    margin-bottom: 3px; /* Reduce margin to save space */
+}
+
+.dashboard-item.selected-day-input .input-group input {
+    width: 100%;
+    padding: 6px; /* Smaller padding to save space */
+    font-size: 0.9em; /* Slightly smaller font */
+}
+
+.dashboard-item.selected-day-input .btn {
+    width: 100%;
+    margin-top: 8px; /* Reduce margin to save space */
+    padding: 6px; /* Smaller padding to save space */
+    font-size: 0.9em; /* Slightly smaller font */
+}
+
+#selected-date-display {
+    font-weight: bold;
+    color: var(--button-primary-bg);
+}
+
+/* Calendar Styling */
+.calendar-navigation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.month-year-display {
+    font-size: 1.2em;
+    font-weight: 600;
+}
+
+.calendar-grid-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.calendar-grid-header span {
+    padding: 10px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-day {
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    position: relative;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.calendar-day:hover {
+    background-color: var(--button-secondary-bg);
+    transform: scale(1.05);
+}
+
+.calendar-day.inactive {
+    color: var(--text-secondary);
+    opacity: 0.5;
+}
+
+.calendar-day.today {
+    border: 2px solid var(--highlight-color);
+    font-weight: bold;
+}
+
+.calendar-day.selected {
+    background-color: var(--calendar-selected-bg);
+    color: white;
+    border: 2px solid var(--calendar-selected-border);
+    font-weight: bold;
+}
+
+.calendar-day.has-hours {
+    background-color: var(--calendar-highlight-bg);
+    color: white;
+    border: 2px solid var(--calendar-highlight-border);
+}
+
+.calendar-day.has-hours.selected {
+    background-color: var(--calendar-selected-bg);
+    border: 2px solid var(--calendar-selected-border);
+    box-shadow: 0 0 0 2px var(--calendar-highlight-border);
+}
+
+/* Paycheck Display Section */
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.summary-item:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.summary-item span:first-child {
+    color: var(--text-secondary);
+    font-weight: 600;
+}
+
+.summary-item span:last-child {
+    font-weight: bold;
+}
+
+.net-pay span:last-child {
+    color: var(--net-pay-color);
+    font-size: 1.2em;
+}
+
+/* Footer Styling */
+footer {
+    text-align: center;
+    padding: 20px;
+    margin-top: auto;
+    color: var(--text-secondary);
+    font-size: 0.9em;
+}
+
+/* Media Queries for Responsiveness */
+@media (max-width: 900px) {
+    .container {
+        padding: 15px;
+        margin: 10px;
+    }
+
+    .card {
+        padding: 20px;
+    }
+
+    .dashboard-summary.horizontal {
+        flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    }
+    
+    .dashboard-summary.horizontal .dashboard-item {
+        flex: 1 1 calc(50% - 15px); /* Two items per row on medium screens */
+        min-width: calc(50% - 15px);
+    }
+
+    .btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 600px) {
+    .dashboard-summary.horizontal .dashboard-item {
+        flex: 1 1 100%; /* Full width on mobile */
+        min-width: 100%;
+    }
+    
+    .app-title {
+        font-size: 1.5em;
+    }
+
+    .card h2 {
+        font-size: 1.4em;
+    }
+
+    .calendar-grid-header span,
+    .calendar-day {
+        font-size: 0.9em;
+    }
+}
