@@ -24,10 +24,10 @@ document.addEventListener('DOMContentLoaded', () => {
     // Log current storage state
     console.log('Initial storage state:', debugStorageState());
     
-    // Initialize all modules
+    // Initialize all modules in the correct order
     initMenu(); // Initialize menu first
+    initDailyHours(); // Initialize daily hours before calendar to prevent undefined element errors
     initCalendar();
-    initDailyHours();
     initSettings();
     initPaycheckCalculation();
     initDashboard();

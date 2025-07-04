@@ -136,11 +136,22 @@ function navigateToNextMonth() {
 
 // Dispatch custom event when a date is selected
 function dispatchDateSelectedEvent(date) {
-    const event = new CustomEvent('dateSelected', { detail: { date } });
-    document.dispatchEvent(event);
-    
-    // Update the daily input display for the selected date
-    updateDailyInputDisplay(date);
+    try {
+        // Create and dispatch the event
+        const event = new CustomEvent('dateSelected', { detail: { date } });
+        document.dispatchEvent(event);
+        
+        // Try to update the daily input display for the selected date
+        // This might fail if initDailyHours hasn't run yet, but the event listener will handle it
+        try {
+            updateDailyInputDisplay(date);
+        } catch (error) {
+            console.warn('Could not update daily input display yet:', error.message);
+            // The event listener in dailyHours.js will handle this later
+        }
+    } catch (error) {
+        console.error('Error dispatching date selected event:', error);
+    }
 }
 
 // Update the calendar when hours data changes

@@ -38,16 +38,26 @@ export function initDailyHours() {
 
 // Update the daily input display for the selected date
 export function updateDailyInputDisplay(date) {
-    // Format the date for display
-    const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    selectedDateDisplay.textContent = date.toLocaleDateString('en-US', options);
+    // Make sure the DOM elements have been initialized
+    if (!selectedDateDisplay || !hoursWorkedInput || !travelTimeInput) {
+        console.error('Daily hours DOM elements not initialized yet. Call initDailyHours() first.');
+        return;
+    }
     
-    // Get hours data for the selected date
-    const hoursData = getHoursForDate(date);
-    
-    // Update input fields
-    hoursWorkedInput.value = hoursData.hoursWorked || '';
-    travelTimeInput.value = hoursData.travelTime || '';
+    try {
+        // Format the date for display
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        selectedDateDisplay.textContent = date.toLocaleDateString('en-US', options);
+        
+        // Get hours data for the selected date
+        const hoursData = getHoursForDate(date);
+        
+        // Update input fields
+        hoursWorkedInput.value = hoursData.hoursWorked || '';
+        travelTimeInput.value = hoursData.travelTime || '';
+    } catch (error) {
+        console.error('Error updating daily input display:', error);
+    }
 }
 
 // Save the daily hours
