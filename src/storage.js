@@ -93,3 +93,27 @@ export function formatCurrency(value) {
 export function formatHours(hours) {
     return parseFloat(hours).toFixed(2);
 }
+
+// Debug utility to view all stored data
+export function debugStorageState() {
+    return {
+        hoursData: loadHoursData(),
+        settings: loadSettings(),
+        allStorageKeys: Object.keys(localStorage),
+        totalItems: localStorage.length,
+        estimatedSize: getTotalStorageSize()
+    };
+}
+
+// Calculate approximate size of localStorage
+function getTotalStorageSize() {
+    let size = 0;
+    for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        const value = localStorage.getItem(key);
+        size += (key.length + value.length) * 2; // Unicode characters use 2 bytes
+    }
+    
+    // Return size in KB
+    return (size / 1024).toFixed(2) + ' KB';
+}
