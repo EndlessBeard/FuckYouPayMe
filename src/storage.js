@@ -2,14 +2,21 @@
 const HOURS_DATA_KEY = 'fypm_hours_data';
 const SETTINGS_KEY = 'fypm_settings';
 
-// Default settings
-const defaultSettings = {
-    payRate: 20.00,
-    travelRate: 15.00,
-    payPeriodDays: 14,
-    payPeriodStartDate: new Date().toISOString().split('T')[0], // Today's date in YYYY-MM-DD format
-    withholdingPercentage: 20
-};
+// Helper function to get today's date in YYYY-MM-DD format
+function getTodayFormatted() {
+    return new Date().toISOString().split('T')[0];
+}
+
+// Default settings - notice we use a function to ensure fresh defaults each time
+function getDefaultSettings() {
+    return {
+        payRate: 20.00,
+        travelRate: 15.00,
+        payPeriodDays: 14,
+        payPeriodStartDate: getTodayFormatted(), // Today's date in YYYY-MM-DD format
+        withholdingPercentage: 20
+    };
+}
 
 // Load hours data from localStorage
 export function loadHoursData() {
@@ -89,13 +96,20 @@ export function loadSettings() {
         console.log('Raw stored settings:', storedSettings);
         
         // Parse or use defaults
-        const settings = storedSettings ? JSON.parse(storedSettings) : defaultSettings;
+        const settings = storedSettings ? JSON.parse(storedSettings) : getDefaultSettings();
+        
+        // Ensure payPeriodStartDate is always a valid string
+        if (!settings.payPeriodStartDate || settings.payPeriodStartDate === 'undefined') {
+            console.warn('Invalid payPeriodStartDate detected, resetting to today:', settings.payPeriodStartDate);
+            settings.payPeriodStartDate = getTodayFormatted();
+        }
+        
         console.log('Loaded settings:', settings);
         
         return settings;
     } catch (error) {
         console.error('Error loading settings from localStorage:', error);
-        return defaultSettings;
+        return getDefaultSettings();
     }
 }
 
@@ -104,11 +118,23 @@ export function saveSettings(settings) {
     try {
         console.log('Attempting to save settings:', settings);
         
-        // Create the merged settings object
+        // Ensure payPeriodStartDate is valid
+        if (!settings.payPeriodStartDate || settings.payPeriodStartDate === 'undefined') {
+            console.warn('Invalid payPeriodStartDate provided, using today instead:', settings.payPeriodStartDate);
+            settings.payPeriodStartDate = getTodayFormatted();
+        }
+        
+        // Create the merged settings object with defaults as fallback
+        const defaults = getDefaultSettings();
         const mergedSettings = {
-            ...defaultSettings,
-            ...settings
+            payRate: settings.payRate || defaults.payRate,
+            travelRate: settings.travelRate || defaults.travelRate,
+            payPeriodDays: settings.payPeriodDays || defaults.payPeriodDays,
+            payPeriodStartDate: settings.payPeriodStartDate || defaults.payPeriodStartDate,
+            withholdingPercentage: settings.withholdingPercentage || defaults.withholdingPercentage
         };
+        
+        console.log('Merged settings to save:', mergedSettings);
         
         // Stringify the settings
         const settingsJSON = JSON.stringify(mergedSettings);
@@ -125,7 +151,7 @@ export function saveSettings(settings) {
         return savedSettings;
     } catch (error) {
         console.error('Error saving settings to localStorage:', error);
-        return defaultSettings;
+        return getDefaultSettings();
     }
 }
 
