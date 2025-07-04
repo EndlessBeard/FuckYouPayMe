@@ -7,9 +7,6 @@ import { initDashboard } from './dashboard.js';
 import { initMenu } from './menu.js';
 import { isLocalStorageAvailable, debugStorageState } from './storage.js';
 
-// Import test harness (only active in development)
-import './testHarness.js';
-
 // Initialize the application when DOM is fully loaded
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Application initialized');
