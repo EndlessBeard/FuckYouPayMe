@@ -7,6 +7,7 @@ let lastWeekHoursElement;
 let lastWeekPayElement;
 let currentWeekHoursElement;
 let currentWeekPayElement;
+let currentWeekNetElement;
 let daysUntilPaydayElement;
 
 // Initialize dashboard
@@ -16,6 +17,7 @@ export function initDashboard() {
     lastWeekPayElement = document.getElementById('dashboard-last-week-pay');
     currentWeekHoursElement = document.getElementById('dashboard-current-week-hours');
     currentWeekPayElement = document.getElementById('dashboard-current-week-pay');
+    currentWeekNetElement = document.getElementById('dashboard-current-week-net');
     daysUntilPaydayElement = document.getElementById('dashboard-days-till-payday');
     
     // Initial update
@@ -47,16 +49,25 @@ export function updateDashboard() {
     // Calculate days until next payday
     const daysUntilPayday = calculateDaysUntilPayday(settings.payPeriodStartDate, settings.payPeriodDays);
     
+    // Calculate net pay for current week (apply withholding percentage)
+    const withholding = (currentWeekData.grossPay * settings.withholdingPercentage) / 100;
+    const netPay = currentWeekData.grossPay - withholding;
+    
     // Update the dashboard display
     lastWeekHoursElement.textContent = formatHours(lastWeekData.totalHours);
     lastWeekPayElement.textContent = formatCurrency(lastWeekData.grossPay);
     currentWeekHoursElement.textContent = formatHours(currentWeekData.totalHours);
     currentWeekPayElement.textContent = formatCurrency(currentWeekData.grossPay);
+    currentWeekNetElement.textContent = formatCurrency(netPay);
     daysUntilPaydayElement.textContent = daysUntilPayday;
     
     console.log('Dashboard updated with:', {
         lastWeek: { hours: lastWeekData.totalHours, pay: lastWeekData.grossPay },
-        currentWeek: { hours: currentWeekData.totalHours, pay: currentWeekData.grossPay },
+        currentWeek: { 
+            hours: currentWeekData.totalHours, 
+            pay: currentWeekData.grossPay,
+            net: netPay 
+        },
         daysUntilPayday
     });
 }

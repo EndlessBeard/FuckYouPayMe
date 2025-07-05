@@ -360,6 +360,11 @@ body {
     color: rgba(255, 255, 255, 0.85);
 }
 
+.dashboard-item.current-week p:last-of-type span {
+    color: var(--net-pay-color);
+    font-weight: bold;
+}
+
 .dashboard-item.payday-countdown span {
     color: var(--highlight-color);
     font-weight: bold;
