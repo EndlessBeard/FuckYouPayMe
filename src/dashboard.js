@@ -62,10 +62,21 @@ export function updateDashboard() {
     daysUntilPaydayElement.textContent = daysUntilPayday;
     
     console.log('Dashboard updated with:', {
-        lastWeek: { hours: lastWeekData.totalHours, pay: lastWeekData.grossPay },
+        lastWeek: { 
+            hours: lastWeekData.totalHours, 
+            regularHours: lastWeekData.regularHours,
+            overtimeHours: lastWeekData.overtimeHours,
+            pay: lastWeekData.grossPay,
+            regularPay: lastWeekData.regularPay,
+            overtimePay: lastWeekData.overtimePay
+        },
         currentWeek: { 
             hours: currentWeekData.totalHours, 
+            regularHours: currentWeekData.regularHours,
+            overtimeHours: currentWeekData.overtimeHours,
             pay: currentWeekData.grossPay,
+            regularPay: currentWeekData.regularPay,
+            overtimePay: currentWeekData.overtimePay,
             net: netPay 
         },
         daysUntilPayday
