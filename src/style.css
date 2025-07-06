@@ -20,6 +20,7 @@
     --calendar-highlight-border: #1e7e34;
     --calendar-selected-bg: #007bff; /* Blue for selected day */
     --calendar-selected-border: #0056b3;
+    --pay-period-start-color: #ffeb3b; /* Yellow for pay period start days */
 }
 
 /* Basic Reset & Body Styling */
@@ -488,6 +489,64 @@ body {
     background-color: var(--calendar-selected-bg);
     border: 2px solid var(--calendar-selected-border);
     box-shadow: 0 0 0 2px var(--calendar-highlight-border);
+}
+
+/* Pay period start indicator - yellow line at the top of the calendar day */
+.calendar-day.pay-period-start {
+    border-top: 3px solid var(--pay-period-start-color);
+    position: relative;
+}
+
+.calendar-day.pay-period-start:before {
+    content: "";
+    position: absolute;
+    top: -3px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: var(--pay-period-start-color);
+    z-index: 2;
+}
+
+/* Calendar Legend */
+.calendar-legend {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    margin: 10px 0;
+    padding: 5px;
+    background-color: var(--bg-secondary);
+    border-radius: 5px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    margin: 0 10px;
+    font-size: 0.8em;
+}
+
+.legend-color {
+    width: 20px;
+    height: 20px;
+    border-radius: 3px;
+    margin-right: 5px;
+}
+
+.legend-color.pay-period-start {
+    border-top: 3px solid var(--pay-period-start-color);
+    background-color: var(--input-bg);
+}
+
+.legend-color.has-hours {
+    background-color: var(--calendar-highlight-bg);
+    border: 1px solid var(--calendar-highlight-border);
+}
+
+.legend-color.today {
+    background-color: var(--input-bg);
+    border: 2px solid var(--highlight-color);
 }
 
 /* Paycheck Display Section */

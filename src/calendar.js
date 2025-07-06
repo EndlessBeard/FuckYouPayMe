@@ -1,6 +1,7 @@
 import { getHoursForDate, loadHoursData } from './storage.js';
 import { updateDailyInputDisplay } from './dailyHours.js';
 import { updateDashboard } from './dashboard.js';
+import { getSettings } from './settings.js';
 
 // State variables
 let currentDate = new Date();
@@ -59,6 +60,10 @@ function renderCalendar(month, year) {
     // Get hours data for highlighting days with recorded hours
     const hoursData = loadHoursData();
     
+    // Get pay period information for highlighting pay period start dates
+    const settings = getSettingsForCalendar();
+    const payPeriodStartDates = calculatePayPeriodStartDates(settings.payPeriodStartDate, settings.payPeriodDays, month, year);
+    
     // Create blank cells for days before the first day of the month
     for (let i = 0; i < adjustedFirstDay; i++) {
         const emptyCell = document.createElement('div');
@@ -91,6 +96,11 @@ function renderCalendar(month, year) {
         // Check if this day has recorded hours
         if (hoursData[dateString]) {
             dateCell.classList.add('has-hours');
+        }
+        
+        // Check if this day is a pay period start date
+        if (isPayPeriodStartDate(cellDate, payPeriodStartDates)) {
+            dateCell.classList.add('pay-period-start');
         }
         
         // Add click event to select the day
@@ -158,4 +168,69 @@ function dispatchDateSelectedEvent(date) {
 export function updateCalendar() {
     renderCalendar(currentMonth, currentYear);
     updateDashboard();
+}
+
+// Function to get settings for the calendar (to avoid circular dependencies)
+function getSettingsForCalendar() {
+    return getSettings();
+}
+
+// Calculate all pay period start dates that fall within a specific month
+function calculatePayPeriodStartDates(startDateStr, periodLength, month, year) {
+    // Parse the base start date
+    const startDateBase = new Date(startDateStr);
+    
+    // If the date is invalid, return an empty array
+    if (isNaN(startDateBase.getTime())) {
+        console.error('Invalid pay period start date:', startDateStr);
+        return [];
+    }
+    
+    // Create array to store all pay period start dates for the month
+    const payPeriodStartDates = [];
+    
+    // Get the first day of the month
+    const firstDayOfMonth = new Date(year, month, 1);
+    // Get the last day of the month
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+    
+    // Calculate how many days have passed from the base start date to the first day of the month
+    const daysSinceStart = Math.floor((firstDayOfMonth - startDateBase) / (24 * 60 * 60 * 1000));
+    
+    // Calculate how many complete periods have passed
+    let periodsPassed = Math.floor(daysSinceStart / periodLength);
+    
+    // If the result is negative, we need to find the first pay period start date after the base date
+    if (daysSinceStart < 0) {
+        periodsPassed = Math.ceil(daysSinceStart / periodLength);
+    }
+    
+    // Calculate the pay period start date closest to the beginning of the month
+    const firstPayPeriodStart = new Date(startDateBase);
+    firstPayPeriodStart.setDate(startDateBase.getDate() + (periodsPassed * periodLength));
+    
+    // Now iterate through all pay period start dates in this month
+    let currentPayPeriodStart = new Date(firstPayPeriodStart);
+    
+    // If the first pay period start is before the beginning of the month, advance to the next one
+    if (currentPayPeriodStart < firstDayOfMonth) {
+        currentPayPeriodStart.setDate(currentPayPeriodStart.getDate() + periodLength);
+    }
+    
+    // Add all pay period start dates that fall within this month
+    while (currentPayPeriodStart <= lastDayOfMonth) {
+        payPeriodStartDates.push(new Date(currentPayPeriodStart));
+        currentPayPeriodStart.setDate(currentPayPeriodStart.getDate() + periodLength);
+    }
+    
+    return payPeriodStartDates;
+}
+
+// Check if a date is a pay period start date
+function isPayPeriodStartDate(date, payPeriodStartDates) {
+    return payPeriodStartDates.some(startDate => 
+        startDate.getDate() === date.getDate() && 
+        startDate.getMonth() === date.getMonth() && 
+        startDate.getFullYear() === date.getFullYear()
+    );
 }
