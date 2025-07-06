@@ -386,9 +386,9 @@ export function calculatePayPeriodTotals(startDate, endDate, settings) {
 }
 
 // Calculate days until next payday
-export function calculateDaysUntilPayday(payPeriodStartDate, payPeriodDays) {
+export function calculateDaysUntilPayday(payPeriodStartDate, payPeriodDays, paydayDelay = 3) {
     console.group('Calculate Days Until Payday');
-    console.log('Inputs:', { payPeriodStartDate, payPeriodDays });
+    console.log('Inputs:', { payPeriodStartDate, payPeriodDays, paydayDelay });
     
     // Validate inputs
     if (!payPeriodStartDate || !payPeriodDays) {
@@ -401,9 +401,14 @@ export function calculateDaysUntilPayday(payPeriodStartDate, payPeriodDays) {
     const { endDate } = calculatePayPeriodDates(payPeriodStartDate, payPeriodDays);
     console.log('Pay period end date:', endDate);
     
-    // Calculate days until the end of the current pay period
+    // Calculate the actual payday by adding the delay to the pay period end date
+    const paydayDate = new Date(endDate);
+    paydayDate.setDate(endDate.getDate() + paydayDelay);
+    console.log('Actual payday date (with delay):', paydayDate);
+    
+    // Calculate days until the payday (end of the current pay period + delay)
     const today = new Date();
-    const daysUntilPayday = Math.ceil((endDate - today) / (24 * 60 * 60 * 1000)) + 1;
+    const daysUntilPayday = Math.ceil((paydayDate - today) / (24 * 60 * 60 * 1000));
     
     console.log('Days until payday (raw):', daysUntilPayday);
     const result = daysUntilPayday > 0 ? daysUntilPayday : 0;

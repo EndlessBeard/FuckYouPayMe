@@ -73,7 +73,11 @@ export function updateDashboard() {
     const prevPayPeriodData = calculatePayPeriodTotals(prevPayPeriodStart, prevPayPeriodEnd, settings);
     
     // Calculate days until next payday
-    const daysUntilPayday = calculateDaysUntilPayday(settings.payPeriodStartDate, settings.payPeriodDays);
+    const daysUntilPayday = calculateDaysUntilPayday(
+        settings.payPeriodStartDate, 
+        settings.payPeriodDays,
+        settings.paydayDelay
+    );
     
     // Calculate net pay for current pay period (apply withholding percentage)
     const withholding = (currentPayPeriodData.grossPay * settings.withholdingPercentage) / 100;

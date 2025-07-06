@@ -14,7 +14,8 @@ function getDefaultSettings() {
         travelRate: 15.00,
         payPeriodDays: 14,
         payPeriodStartDate: getTodayFormatted(), // Today's date in YYYY-MM-DD format
-        withholdingPercentage: 20
+        withholdingPercentage: 20,
+        paydayDelay: 3 // Number of days after the pay period ends until pay is received
     };
 }
 

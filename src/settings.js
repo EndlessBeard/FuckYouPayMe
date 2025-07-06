@@ -8,6 +8,7 @@ let travelRateInput;
 let payPeriodDaysInput;
 let payPeriodStartDateInput;
 let withholdingPercentageInput;
+let paydayDelayInput;
 let saveSettingsBtn;
 
 // Initialize settings functionality
@@ -18,6 +19,7 @@ export function initSettings() {
     payPeriodDaysInput = document.getElementById('pay-period-days');
     payPeriodStartDateInput = document.getElementById('pay-period-start-date');
     withholdingPercentageInput = document.getElementById('withholding-percentage');
+    paydayDelayInput = document.getElementById('payday-delay');
     saveSettingsBtn = document.getElementById('save-settings-btn');
     
     // Load and display settings
@@ -31,7 +33,7 @@ export function initSettings() {
     
     // Add event listeners for all input changes
     const allInputs = [payRateInput, travelRateInput, payPeriodDaysInput, 
-                      payPeriodStartDateInput, withholdingPercentageInput];
+                      payPeriodStartDateInput, withholdingPercentageInput, paydayDelayInput];
     
     allInputs.forEach(input => {
         input.addEventListener('change', () => {
@@ -49,6 +51,7 @@ function loadAndDisplaySettings() {
     payRateInput.value = settings.payRate;
     travelRateInput.value = settings.travelRate;
     payPeriodDaysInput.value = settings.payPeriodDays;
+    paydayDelayInput.value = settings.paydayDelay || 3; // Default to 3 if not set
     
     // Make sure the date is properly formatted for the date input
     // Date inputs require YYYY-MM-DD format
@@ -112,13 +115,15 @@ function saveUserSettings() {
         }
         
         const withholdingPercentage = parseFloat(withholdingPercentageInput.value) || 0;
+        const paydayDelay = parseInt(paydayDelayInput.value) || 3; // Default to 3 if not valid
         
         console.log('Form values retrieved:', {
             payRate,
             travelRate,
             payPeriodDays,
             payPeriodStartDate,
-            withholdingPercentage
+            withholdingPercentage,
+            paydayDelay
         });
         
         // Create settings object
@@ -127,7 +132,8 @@ function saveUserSettings() {
             travelRate,
             payPeriodDays,
             payPeriodStartDate,
-            withholdingPercentage
+            withholdingPercentage,
+            paydayDelay
         };
         
         console.log('Saving settings:', settings);
