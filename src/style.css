@@ -470,6 +470,9 @@ body {
 .calendar-day.today {
     border: 2px solid var(--highlight-color);
     font-weight: bold;
+    position: relative;
+    box-shadow: 0 0 5px var(--highlight-color);
+    z-index: 1;
 }
 
 .calendar-day.selected {
@@ -491,21 +494,42 @@ body {
     box-shadow: 0 0 0 2px var(--calendar-highlight-border);
 }
 
+/* Handle combinations of today with other indicators */
+.calendar-day.today.has-hours {
+    background-color: var(--calendar-highlight-bg);
+    border: 2px solid var(--highlight-color);
+    box-shadow: inset 0 0 0 2px var(--calendar-highlight-border);
+    z-index: 2;
+}
+
+.calendar-day.today.selected {
+    background-color: var(--calendar-selected-bg);
+    border: 2px solid var(--highlight-color);
+    box-shadow: inset 0 0 0 2px var(--calendar-selected-border);
+}
+
+.calendar-day.today.pay-period-start {
+    border: 2px solid var(--highlight-color);
+}
+
+.calendar-day.today.pay-period-start:before {
+    z-index: 3; /* Ensure the yellow line appears above everything */
+}
+
 /* Pay period start indicator - yellow line at the top of the calendar day */
 .calendar-day.pay-period-start {
-    border-top: 3px solid var(--pay-period-start-color);
     position: relative;
 }
 
 .calendar-day.pay-period-start:before {
     content: "";
     position: absolute;
-    top: -3px;
+    top: -2px;
     left: 0;
     right: 0;
     height: 3px;
     background-color: var(--pay-period-start-color);
-    z-index: 2;
+    z-index: 3;
 }
 
 /* Calendar Legend */
@@ -535,8 +559,18 @@ body {
 }
 
 .legend-color.pay-period-start {
-    border-top: 3px solid var(--pay-period-start-color);
+    position: relative;
     background-color: var(--input-bg);
+}
+
+.legend-color.pay-period-start:before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: var(--pay-period-start-color);
 }
 
 .legend-color.has-hours {
@@ -547,6 +581,7 @@ body {
 .legend-color.today {
     background-color: var(--input-bg);
     border: 2px solid var(--highlight-color);
+    box-shadow: 0 0 5px var(--highlight-color);
 }
 
 /* Paycheck Display Section */
