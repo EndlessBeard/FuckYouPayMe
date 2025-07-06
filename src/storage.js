@@ -46,7 +46,19 @@ export function saveHoursData(data) {
 
 // Save hours for a specific date
 export function saveHoursForDate(date, hoursWorked, travelTime) {
-    const dateString = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+    // Ensure consistent date formatting for storage
+    const dateObj = new Date(date);
+    dateObj.setHours(0, 0, 0, 0); // Normalize to beginning of day
+    const dateString = dateObj.toISOString().split('T')[0]; // YYYY-MM-DD format
+    
+    console.log(`Saving hours for date: ${dateString}`, {
+        originalDate: date,
+        normalizedDate: dateObj,
+        dateString: dateString,
+        hoursWorked: parseFloat(hoursWorked) || 0,
+        travelTime: parseFloat(travelTime) || 0
+    });
+    
     const hoursData = loadHoursData();
     
     hoursData[dateString] = {
@@ -61,8 +73,24 @@ export function saveHoursForDate(date, hoursWorked, travelTime) {
 
 // Get hours for a specific date
 export function getHoursForDate(date) {
-    const dateString = date.toISOString().split('T')[0];
+    // Ensure consistent date formatting for lookup
+    const dateObj = new Date(date);
+    dateObj.setHours(0, 0, 0, 0); // Normalize to beginning of day
+    const dateString = dateObj.toISOString().split('T')[0];
+    
+    console.log(`Getting hours for date: ${dateString}`, {
+        originalDate: date,
+        normalizedDate: dateObj,
+        dateString: dateString
+    });
+    
     const hoursData = loadHoursData();
+    
+    if (hoursData[dateString]) {
+        console.log(`Found hours for ${dateString}:`, hoursData[dateString]);
+    } else {
+        console.log(`No hours found for ${dateString}`);
+    }
     
     return hoursData[dateString] || { hoursWorked: 0, travelTime: 0, date: dateString };
 }

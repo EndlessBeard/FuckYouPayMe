@@ -65,7 +65,14 @@ export function updatePaycheckDisplay() {
     
     // Get the pay period date range
     const { startDate, endDate } = calculatePayPeriodDates(settings.payPeriodStartDate, settings.payPeriodDays);
-    console.log('Pay period dates:', { startDate, endDate });
+    console.log('Pay period dates:', { 
+        startDate, 
+        endDate, 
+        startDateFormatted: startDate.toISOString().split('T')[0],
+        endDateFormatted: endDate.toISOString().split('T')[0],
+        startDateTimestamp: startDate.getTime(),
+        endDateTimestamp: endDate.getTime()
+    });
     
     // Format the date range for display
     const formattedStartDate = startDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
@@ -154,58 +161,96 @@ function calculatePayPeriodDates(startDateStr, periodLength) {
         return calculatePayPeriodDates(fallbackDate, periodLength);
     }
     
-    // Parse the start date
-    const startDateBase = new Date(startDateStr);
-    
-    // Validate the date is valid
-    if (isNaN(startDateBase.getTime())) {
-        console.error('Invalid date object created from:', startDateStr);
+    try {
+        // Parse the start date - ensure we're using the correct date without timezone issues
+        // Use Date.parse to avoid timezone conversion issues
+        const startDateParts = startDateStr.split('-');
+        
+        // Note: months are 0-indexed in JavaScript Date
+        const startDateBase = new Date(
+            parseInt(startDateParts[0]), // year
+            parseInt(startDateParts[1]) - 1, // month (0-indexed)
+            parseInt(startDateParts[2]) // day
+        );
+        // Set to beginning of day
+        startDateBase.setHours(0, 0, 0, 0);
+        
+        // Validate the date is valid
+        if (isNaN(startDateBase.getTime())) {
+            console.error('Invalid date object created from:', startDateStr);
+            console.groupEnd();
+            
+            // Use today as a fallback
+            const today = new Date();
+            const fallbackDate = today.toISOString().split('T')[0];
+            console.warn('Using fallback date due to invalid date:', fallbackDate);
+            
+            return calculatePayPeriodDates(fallbackDate, periodLength);
+        }
+        
+        console.log('Start date base:', startDateBase);
+        
+        // Get today's date
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Set to beginning of day for consistent calculations
+        console.log('Today:', today);
+        
+        // Calculate how many days have passed since the base start date
+        // Add 1 to the milliseconds to handle floating point precision issues
+        const msDiff = today.getTime() - startDateBase.getTime() + 1;
+        const daysSinceStart = Math.floor(msDiff / (24 * 60 * 60 * 1000));
+        console.log('Days since start:', daysSinceStart);
+        
+        // Calculate how many complete periods have passed
+        const periodsPassed = Math.floor(daysSinceStart / periodLength);
+        console.log('Periods passed:', periodsPassed);
+        
+        // Calculate the start date of the current period
+        const currentPeriodStart = new Date(startDateBase);
+        currentPeriodStart.setDate(startDateBase.getDate() + (periodsPassed * periodLength));
+        currentPeriodStart.setHours(0, 0, 0, 0); // Ensure start of day
+        
+        // Calculate the end date of the current period
+        const currentPeriodEnd = new Date(currentPeriodStart);
+        currentPeriodEnd.setDate(currentPeriodStart.getDate() + periodLength - 1);
+        currentPeriodEnd.setHours(23, 59, 59, 999); // Set to end of day
+        
+        console.log('Result:', { 
+            startDate: currentPeriodStart, 
+            endDate: currentPeriodEnd,
+            formattedStart: currentPeriodStart.toISOString().split('T')[0],
+            formattedEnd: currentPeriodEnd.toISOString().split('T')[0]
+        });
+        
         console.groupEnd();
         
-        // Use today as a fallback
+        return { startDate: currentPeriodStart, endDate: currentPeriodEnd };
+    } catch (error) {
+        console.error('Error in calculatePayPeriodDates:', error);
+        console.groupEnd();
+        
+        // Fallback to today
         const today = new Date();
         const fallbackDate = today.toISOString().split('T')[0];
-        console.warn('Using fallback date due to invalid date:', fallbackDate);
+        console.warn('Using fallback date due to error:', fallbackDate);
         
-        return calculatePayPeriodDates(fallbackDate, periodLength);
+        // Only recurse once to avoid infinite loop
+        if (startDateStr !== fallbackDate) {
+            return calculatePayPeriodDates(fallbackDate, periodLength);
+        } else {
+            // Create a basic response if we're already using the fallback
+            const startDate = new Date(today);
+            startDate.setHours(0, 0, 0, 0);
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + periodLength - 1);
+            endDate.setHours(23, 59, 59, 999);
+            return { startDate, endDate };
+        }
     }
-    
-    console.log('Start date base:', startDateBase);
-    
-    // Get today's date
-    const today = new Date();
-    console.log('Today:', today);
-    
-    // Calculate how many days have passed since the base start date
-    const daysSinceStart = Math.floor((today - startDateBase) / (24 * 60 * 60 * 1000));
-    console.log('Days since start:', daysSinceStart);
-    
-    // Calculate how many complete periods have passed
-    const periodsPassed = Math.floor(daysSinceStart / periodLength);
-    console.log('Periods passed:', periodsPassed);
-    
-    // Calculate the start date of the current period
-    const currentPeriodStart = new Date(startDateBase);
-    currentPeriodStart.setDate(startDateBase.getDate() + (periodsPassed * periodLength));
-    
-    // Calculate the end date of the current period
-    const currentPeriodEnd = new Date(currentPeriodStart);
-    currentPeriodEnd.setDate(currentPeriodStart.getDate() + periodLength - 1);
-    
-    console.log('Result:', { 
-        startDate: currentPeriodStart, 
-        endDate: currentPeriodEnd,
-        formattedStart: currentPeriodStart.toISOString().split('T')[0],
-        formattedEnd: currentPeriodEnd.toISOString().split('T')[0]
-    });
-    
-    console.groupEnd();
-    
-    return { startDate: currentPeriodStart, endDate: currentPeriodEnd };
 }
 
 // Calculate total hours and pay for a date range
-function calculatePayPeriodTotals(startDate, endDate, settings) {
+export function calculatePayPeriodTotals(startDate, endDate, settings) {
     console.group('Calculate Pay Period Totals');
     console.log('Date range:', { 
         startDate: startDate.toISOString().split('T')[0], 
@@ -226,6 +271,23 @@ function calculatePayPeriodTotals(startDate, endDate, settings) {
     // Process the pay period in 7-day chunks to calculate overtime correctly
     // This ensures overtime is calculated per week (40h threshold) rather than for the entire pay period
     const currentDate = new Date(startDate);
+    // Ensure we're starting at the beginning of the day
+    currentDate.setHours(0, 0, 0, 0);
+    
+    // For debugging, log all days in the pay period
+    console.log('Pay period days:');
+    const debugDate = new Date(startDate);
+    debugDate.setHours(0, 0, 0, 0);
+    
+    // Create a map of date strings to make lookup easier
+    const dateMap = {};
+    while (debugDate <= endDate) {
+        const debugDateStr = debugDate.toISOString().split('T')[0];
+        const hasHours = !!hoursData[debugDateStr];
+        dateMap[debugDateStr] = true;
+        console.log(`- ${debugDateStr}: ${hasHours ? 'Has hours' : 'No hours'}`);
+        debugDate.setDate(debugDate.getDate() + 1);
+    }
     
     while (currentDate <= endDate) {
         // Create a 7-day period (or less if we're at the end of the pay period)
@@ -250,7 +312,7 @@ function calculatePayPeriodTotals(startDate, endDate, settings) {
         // Loop through each day in the current week
         const weekDay = new Date(weekStartDate);
         while (weekDay <= weekEndDate) {
-            // Convert date to string format
+            // Convert date to string format (YYYY-MM-DD)
             const dateString = weekDay.toISOString().split('T')[0];
             
             // Add hours if they exist for this date
@@ -262,6 +324,8 @@ function calculatePayPeriodTotals(startDate, endDate, settings) {
                 weeklyTravel += dayTravel;
                 
                 console.log(`Day ${dateString}: ${dayHours}h worked, ${dayTravel}h travel`);
+            } else {
+                console.log(`Day ${dateString}: No hours recorded`);
             }
             
             // Move to next day
@@ -364,8 +428,21 @@ export function calculateWeekTotals(weekStart, weekEnd, settings) {
     let totalHours = 0;
     let totalTravel = 0;
     
+    // For debugging, log all days in the week
+    console.log('Week days:');
+    const debugDate = new Date(weekStart);
+    debugDate.setHours(0, 0, 0, 0);
+    while (debugDate <= weekEnd) {
+        const debugDateStr = debugDate.toISOString().split('T')[0];
+        const hasHours = !!hoursData[debugDateStr];
+        console.log(`- ${debugDateStr}: ${hasHours ? 'Has hours' : 'No hours'}`);
+        debugDate.setDate(debugDate.getDate() + 1);
+    }
+    
     // Loop through each day in the week
     const currentDate = new Date(weekStart);
+    currentDate.setHours(0, 0, 0, 0); // Normalize to beginning of day
+    
     while (currentDate <= weekEnd) {
         // Convert date to string format
         const dateString = currentDate.toISOString().split('T')[0];
@@ -379,6 +456,8 @@ export function calculateWeekTotals(weekStart, weekEnd, settings) {
             totalTravel += dayTravel;
             
             console.log(`Day ${dateString}: ${dayHours}h worked, ${dayTravel}h travel`);
+        } else {
+            console.log(`Day ${dateString}: No hours recorded`);
         }
         
         // Move to next day
