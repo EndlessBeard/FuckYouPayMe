@@ -31,6 +31,18 @@
             <!-- Dashboard Section - Horizontal layout with hours input after payday -->
             <section id="dashboard-section" class="card dashboard-card">
                 <h2>Dashboard</h2>
+                    <div id="selected-day-input-card" class="dashboard-item selected-day-input">
+                        <h3>Hours for <span id="selected-date-display">Today</span></h3>
+                        <div class="input-group">
+                            <label for="daily-hours-worked">Hours Worked:</label>
+                            <input type="number" id="daily-hours-worked" step="0.01" min="0">
+                        </div>
+                        <div class="input-group">
+                            <label for="daily-travel-time">Travel Time:</label>
+                            <input type="number" id="daily-travel-time" step="0.01" min="0">
+                        </div>
+                        <button id="save-daily-hours-btn" class="btn primary">Save</button>
+                    </div>
                 <div class="dashboard-summary horizontal">
                     <div class="dashboard-item">
                         <h3>Previous Pay Period</h3>
@@ -46,19 +58,6 @@
                     <div class="dashboard-item payday-countdown">
                         <h3>Next Payday In</h3>
                         <p><span id="dashboard-days-till-payday">0</span> days</p>
-                    </div>
-                    <!-- Moved: Selected Day Hours Input after payday countdown -->
-                    <div id="selected-day-input-card" class="dashboard-item selected-day-input">
-                        <h3>Hours for <span id="selected-date-display">Today</span></h3>
-                        <div class="input-group">
-                            <label for="daily-hours-worked">Hours Worked:</label>
-                            <input type="number" id="daily-hours-worked" step="0.01" min="0">
-                        </div>
-                        <div class="input-group">
-                            <label for="daily-travel-time">Travel Time:</label>
-                            <input type="number" id="daily-travel-time" step="0.01" min="0">
-                        </div>
-                        <button id="save-daily-hours-btn" class="btn primary">Save</button>
                     </div>
                 </div>
             </section>
