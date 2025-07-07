@@ -189,6 +189,13 @@ body {
     margin-bottom: 25px; /* Ensure dashboard has margin below it */
 }
 
+/* Fix for Android display issue - ensure consistent width */
+#selected-day-input-card {
+    width: 100%;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
 .card h2 {
     color: var(--text-primary);
     font-size: 1.6em;
@@ -313,11 +320,19 @@ body {
     display: block !important; /* Always display the dashboard */
 }
 
+#selected-day-input-card {
+    width: 100%;
+    margin-bottom: 15px;
+    box-sizing: border-box;
+}
+
 .dashboard-summary {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
     gap: 20px;
     margin-bottom: 25px;
+    width: 100%; /* Ensure full width */
+    box-sizing: border-box;
 }
 
 .dashboard-summary.horizontal {
@@ -668,11 +683,18 @@ footer {
 
     .dashboard-summary.horizontal {
         flex-wrap: wrap; /* Allow wrapping on smaller screens */
+        width: 100%; /* Ensure consistent width */
     }
     
     .dashboard-summary.horizontal .dashboard-item {
         flex: 1 1 calc(50% - 15px); /* Two items per row on medium screens */
         min-width: calc(50% - 15px);
+        box-sizing: border-box; /* Include padding in width calculation */
+    }
+
+    #selected-day-input-card {
+        width: 100%;
+        margin-bottom: 15px;
     }
 
     .btn {
@@ -684,6 +706,13 @@ footer {
     .dashboard-summary.horizontal .dashboard-item {
         flex: 1 1 100%; /* Full width on mobile */
         min-width: 100%;
+        width: 100%; /* Explicit width for Android */
+        margin-bottom: 10px; /* Add space between stacked items */
+    }
+    
+    #selected-day-input-card {
+        width: 100%;
+        margin-bottom: 15px;
     }
     
     .app-title {
