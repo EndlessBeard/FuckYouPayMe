@@ -68,13 +68,27 @@ function renderCalendar(month, year) {
     
     console.log('Getting pay period start dates with settings:', {
         payPeriodStartDate: settings.payPeriodStartDate,
-        payPeriodDays: settings.payPeriodDays
+        payPeriodDays: settings.payPeriodDays,
+        paydayDelay: settings.paydayDelay || 3
     });
     
     const payPeriodStartDates = calculatePayPeriodStartDates(settings.payPeriodStartDate, settings.payPeriodDays, month, year);
     
     console.log('Pay period start dates for calendar:', 
         payPeriodStartDates.map(d => d.toISOString().split('T')[0])
+    );
+    
+    // Get payday information for highlighting paydays
+    const paydays = calculatePaydaysForMonth(
+        payPeriodStartDates, 
+        settings.payPeriodDays, 
+        settings.paydayDelay || 3,
+        month, 
+        year
+    );
+    
+    console.log('Paydays for calendar:', 
+        paydays.map(d => d.toISOString().split('T')[0])
     );
     
     // Create blank cells for days before the first day of the month
@@ -116,6 +130,13 @@ function renderCalendar(month, year) {
         if (isPeriodStart) {
             dateCell.classList.add('pay-period-start');
             console.log(`Day ${dateString} is a pay period start date`);
+        }
+        
+        // Check if this day is a payday
+        const isPaydayDate = isPayday(cellDate, paydays);
+        if (isPaydayDate) {
+            dateCell.classList.add('payday');
+            console.log(`Day ${dateString} is a payday`);
         }
         
         // Add click event to select the day
@@ -289,6 +310,120 @@ function calculatePayPeriodStartDates(startDateStr, periodLength, month, year) {
     
     console.groupEnd();
     return payPeriodStartDates;
+}
+
+// Calculate all paydays that fall within a specific month
+function calculatePaydaysForMonth(payPeriodStartDates, payPeriodDays, paydayDelay, month, year) {
+    console.group('Calculate Paydays For Month');
+    
+    // Create array to store all paydays for the month
+    const paydays = [];
+    
+    // Get the first day of the month
+    const firstDayOfMonth = new Date(year, month, 1);
+    firstDayOfMonth.setHours(0, 0, 0, 0); // Normalize to beginning of day
+    
+    // Get the last day of the month
+    const lastDayOfMonth = new Date(year, month + 1, 0);
+    lastDayOfMonth.setHours(23, 59, 59, 999); // Normalize to end of day
+    
+    console.log('Month range:', { 
+        firstDayOfMonth: firstDayOfMonth.toISOString().split('T')[0], 
+        lastDayOfMonth: lastDayOfMonth.toISOString().split('T')[0] 
+    });
+    
+    // For each pay period start date, calculate the end of the pay period
+    // and then add the payday delay to get the actual payday
+    payPeriodStartDates.forEach(startDate => {
+        // Calculate the end of this pay period
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + payPeriodDays - 1);
+        endDate.setHours(23, 59, 59, 999);
+        
+        // Calculate the payday (end date + delay)
+        const payday = new Date(endDate);
+        payday.setDate(endDate.getDate() + paydayDelay);
+        payday.setHours(0, 0, 0, 0); // Beginning of day
+        
+        console.log(`Pay period: ${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}, Payday: ${payday.toISOString().split('T')[0]}`);
+        
+        // Add payday to the array if it falls within this month
+        if (payday >= firstDayOfMonth && payday <= lastDayOfMonth) {
+            paydays.push(new Date(payday));
+            console.log(`Added payday: ${payday.toISOString().split('T')[0]}`);
+        }
+    });
+    
+    // Check for paydays from the previous month's pay periods that might fall in this month
+    // We need to check pay periods that start in the previous month
+    const prevMonth = month === 0 ? 11 : month - 1;
+    const prevYear = month === 0 ? year - 1 : year;
+    
+    // Get the first day of the previous month
+    const firstDayOfPrevMonth = new Date(prevYear, prevMonth, 1);
+    firstDayOfPrevMonth.setHours(0, 0, 0, 0);
+    
+    // Get the last day of the previous month
+    const lastDayOfPrevMonth = new Date(year, month, 0);
+    lastDayOfPrevMonth.setHours(23, 59, 59, 999);
+    
+    console.log('Previous month range:', { 
+        firstDayOfPrevMonth: firstDayOfPrevMonth.toISOString().split('T')[0], 
+        lastDayOfPrevMonth: lastDayOfPrevMonth.toISOString().split('T')[0] 
+    });
+    
+    // Calculate pay period start dates for the previous month
+    const settings = getSettingsForCalendar();
+    const prevMonthPayPeriodStarts = calculatePayPeriodStartDates(
+        settings.payPeriodStartDate, 
+        settings.payPeriodDays, 
+        prevMonth, 
+        prevYear
+    );
+    
+    // For each pay period start date from the previous month
+    prevMonthPayPeriodStarts.forEach(startDate => {
+        // Calculate the end of this pay period
+        const endDate = new Date(startDate);
+        endDate.setDate(startDate.getDate() + payPeriodDays - 1);
+        endDate.setHours(23, 59, 59, 999);
+        
+        // Calculate the payday (end date + delay)
+        const payday = new Date(endDate);
+        payday.setDate(endDate.getDate() + paydayDelay);
+        payday.setHours(0, 0, 0, 0); // Beginning of day
+        
+        console.log(`Previous month pay period: ${startDate.toISOString().split('T')[0]} to ${endDate.toISOString().split('T')[0]}, Payday: ${payday.toISOString().split('T')[0]}`);
+        
+        // Add payday to the array if it falls within the current month
+        if (payday >= firstDayOfMonth && payday <= lastDayOfMonth) {
+            paydays.push(new Date(payday));
+            console.log(`Added payday from previous month's pay period: ${payday.toISOString().split('T')[0]}`);
+        }
+    });
+    
+    console.log('Final paydays for month:', 
+        paydays.map(d => d.toISOString().split('T')[0])
+    );
+    
+    console.groupEnd();
+    return paydays;
+}
+
+// Check if a date is a payday
+function isPayday(date, paydays) {
+    // Normalize the input date to beginning of day for consistent comparison
+    const normalizedDate = new Date(date);
+    normalizedDate.setHours(0, 0, 0, 0);
+    
+    // Convert to string format for exact comparison
+    const dateString = normalizedDate.toISOString().split('T')[0];
+    
+    // Check if any of the paydays match this date exactly
+    return paydays.some(payday => {
+        const paydayString = payday.toISOString().split('T')[0];
+        return paydayString === dateString;
+    });
 }
 
 // Check if a date is a pay period start date

@@ -21,6 +21,7 @@
     --calendar-selected-bg: #007bff; /* Blue for selected day */
     --calendar-selected-border: #0056b3;
     --pay-period-start-color: #ffeb3b; /* Yellow for pay period start days */
+    --payday-color: #9c27b0; /* Purple for payday indicator */
 }
 
 /* Basic Reset & Body Styling */
@@ -532,6 +533,23 @@ body {
     z-index: 3;
 }
 
+/* Payday indicator - purple line above the calendar day */
+.calendar-day.payday {
+    position: relative;
+    background-color: var(--input-bg);
+}
+
+.calendar-day.payday:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: var(--payday-color);
+    z-index: 3;
+}
+
 /* Calendar Legend */
 .calendar-legend {
     display: flex;
@@ -571,6 +589,21 @@ body {
     right: 0;
     height: 3px;
     background-color: var(--pay-period-start-color);
+}
+
+.legend-color.payday {
+    position: relative;
+    background-color: var(--input-bg);
+}
+
+.legend-color.payday:after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: var(--payday-color);
 }
 
 .legend-color.has-hours {
