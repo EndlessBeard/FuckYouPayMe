@@ -120,9 +120,15 @@
                     <label for="pay-rate">Hourly Pay Rate ($):</label>
                     <input type="number" id="pay-rate" value="20.00" step="0.01" min="0">
                 </div>
-                <div class="input-group">
+                <div class="input-group travel-pay-row">
                     <label for="travel-rate">Travel Pay Rate ($):</label>
-                    <input type="number" id="travel-rate" value="15.00" step="0.01" min="0">
+                    <div class="input-with-dropdown">
+                        <input type="number" id="travel-rate" value="15.00" step="0.01" min="0">
+                        <select id="travel-pay-type" class="settings-dropdown">
+                            <option value="normal">Normal</option>
+                            <option value="overtime">Overtime</option>
+                        </select>
+                    </div>
                 </div>
                 <div class="input-group">
                     <label for="pay-period-days">Pay Period Length (days):</label>

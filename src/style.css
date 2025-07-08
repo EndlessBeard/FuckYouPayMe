@@ -238,6 +238,51 @@ body {
     box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
+/* Input group with dropdown */
+.travel-pay-row {
+    margin-bottom: 18px;
+}
+
+.input-with-dropdown {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.input-with-dropdown input[type="number"] {
+    flex: 1;
+    border-radius: 8px 0 0 8px;
+    margin-right: 0;
+    width: auto;
+}
+
+.settings-dropdown {
+    width: 100px;
+    padding: 12px 8px;
+    border: 1px solid var(--input-border);
+    border-left: none;
+    border-radius: 0 8px 8px 0;
+    font-size: 1em;
+    box-sizing: border-box;
+    background-color: var(--input-bg);
+    color: var(--text-primary);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23e0e0e0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 8px center;
+    background-size: 16px;
+    cursor: pointer;
+}
+
+.settings-dropdown:focus {
+    border-color: var(--button-primary-bg);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
 /* Button Styling */
 .btn {
     display: inline-block;

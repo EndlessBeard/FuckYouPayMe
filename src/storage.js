@@ -12,6 +12,7 @@ function getDefaultSettings() {
     return {
         payRate: 20.00,
         travelRate: 15.00,
+        travelPayType: 'normal',
         payPeriodDays: 14,
         payPeriodStartDate: getTodayFormatted(), // Today's date in YYYY-MM-DD format
         withholdingPercentage: 20,
@@ -158,9 +159,11 @@ export function saveSettings(settings) {
         const mergedSettings = {
             payRate: settings.payRate || defaults.payRate,
             travelRate: settings.travelRate || defaults.travelRate,
+            travelPayType: settings.travelPayType || defaults.travelPayType,
             payPeriodDays: settings.payPeriodDays || defaults.payPeriodDays,
             payPeriodStartDate: settings.payPeriodStartDate || defaults.payPeriodStartDate,
-            withholdingPercentage: settings.withholdingPercentage || defaults.withholdingPercentage
+            withholdingPercentage: settings.withholdingPercentage || defaults.withholdingPercentage,
+            paydayDelay: (settings.paydayDelay !== undefined) ? settings.paydayDelay : defaults.paydayDelay
         };
         
         console.log('Merged settings to save:', mergedSettings);

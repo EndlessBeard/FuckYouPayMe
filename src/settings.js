@@ -5,6 +5,7 @@ import { updateDashboard } from './dashboard.js';
 // DOM Elements
 let payRateInput;
 let travelRateInput;
+let travelPayTypeSelect;
 let payPeriodDaysInput;
 let payPeriodStartDateInput;
 let withholdingPercentageInput;
@@ -16,6 +17,7 @@ export function initSettings() {
     // Get DOM elements
     payRateInput = document.getElementById('pay-rate');
     travelRateInput = document.getElementById('travel-rate');
+    travelPayTypeSelect = document.getElementById('travel-pay-type');
     payPeriodDaysInput = document.getElementById('pay-period-days');
     payPeriodStartDateInput = document.getElementById('pay-period-start-date');
     withholdingPercentageInput = document.getElementById('withholding-percentage');
@@ -32,7 +34,7 @@ export function initSettings() {
     const settingsChangedEvent = new CustomEvent('settingsChanged');
     
     // Add event listeners for all input changes
-    const allInputs = [payRateInput, travelRateInput, payPeriodDaysInput, 
+    const allInputs = [payRateInput, travelRateInput, travelPayTypeSelect, payPeriodDaysInput, 
                       payPeriodStartDateInput, withholdingPercentageInput, paydayDelayInput];
     
     allInputs.forEach(input => {
@@ -50,6 +52,14 @@ function loadAndDisplaySettings() {
     // Display settings in form
     payRateInput.value = settings.payRate;
     travelRateInput.value = settings.travelRate;
+    
+    // Set travel pay type dropdown (default to 'normal' if not set)
+    if (settings.travelPayType) {
+        travelPayTypeSelect.value = settings.travelPayType;
+    } else {
+        travelPayTypeSelect.value = 'normal';
+    }
+    
     payPeriodDaysInput.value = settings.payPeriodDays;
     paydayDelayInput.value = settings.paydayDelay || 3; // Default to 3 if not set
     
@@ -92,6 +102,7 @@ function saveUserSettings() {
         // Get values from form
         const payRate = parseFloat(payRateInput.value) || 0;
         const travelRate = parseFloat(travelRateInput.value) || 0;
+        const travelPayType = travelPayTypeSelect.value || 'normal';
         const payPeriodDays = parseInt(payPeriodDaysInput.value) || 14;
         
         // Get the pay period start date and ensure it's valid
@@ -120,6 +131,7 @@ function saveUserSettings() {
         console.log('Form values retrieved:', {
             payRate,
             travelRate,
+            travelPayType,
             payPeriodDays,
             payPeriodStartDate,
             withholdingPercentage,
@@ -130,6 +142,7 @@ function saveUserSettings() {
         const settings = {
             payRate,
             travelRate,
+            travelPayType,
             payPeriodDays,
             payPeriodStartDate,
             withholdingPercentage,
